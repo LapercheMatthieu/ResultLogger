@@ -1,0 +1,144 @@
+﻿<UserControl x:Class="MatthL.ResultLogger.UI.LogViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MatthL.ResultLogger.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:FileNameConverter x:Key="FileNameConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <ToolBar Grid.Row="0">
+            <Label Content="Filter:" VerticalAlignment="Center"/>
+            <ComboBox x:Name="LevelFilter" Width="100" SelectedIndex="0">
+                <ComboBoxItem>All</ComboBoxItem>
+                <ComboBoxItem>Debug</ComboBoxItem>
+                <ComboBoxItem>Info</ComboBoxItem>
+                <ComboBoxItem>Warning</ComboBoxItem>
+                <ComboBoxItem>Error</ComboBoxItem>
+                <ComboBoxItem>Critical</ComboBoxItem>
+            </ComboBox>
+
+            <Separator/>
+
+            <TextBox x:Name="SearchBox" Width="200" VerticalAlignment="Center"/>
+            <Button Content="Search" Click="Search_Click" Padding="5,2"/>
+
+            <Separator/>
+
+            <CheckBox x:Name="AutoScrollCheck" Content="Auto-scroll" IsChecked="True" VerticalAlignment="Center"/>
+            <CheckBox x:Name="AutoRefreshCheck" Content="Auto-refresh" IsChecked="True" VerticalAlignment="Center" Checked="AutoRefresh_Changed" Unchecked="AutoRefresh_Changed"/>
+
+            <Separator/>
+
+            <Button Content="Clear" Click="Clear_Click" Padding="5,2"/>
+            <Button Content="Export" Click="Export_Click" Padding="5,2"/>
+            <Button Content="Open Log File" Click="OpenFile_Click" Padding="5,2"/>
+        </ToolBar>
+
+        <!-- Log DataGrid -->
+        <DataGrid Grid.Row="1" 
+                  x:Name="LogGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="Horizontal"
+                  AlternatingRowBackground="#F5F5F5"
+                  SelectionMode="Extended"
+                  SelectionUnit="FullRow">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Level}" Value="Error">
+                            <Setter Property="Background" Value="#FFEEEE"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level}" Value="Critical">
+                            <Setter Property="Background" Value="#FFDDDD"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level}" Value="Warning">
+                            <Setter Property="Background" Value="#FFFACD"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level}" Value="Debug">
+                            <Setter Property="Background" Value="#F0F0F0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Time" 
+                                   Binding="{Binding Timestamp, StringFormat='HH:mm:ss.fff'}" 
+                                   Width="100"/>
+                <DataGridTextColumn Header="Level" 
+                                   Binding="{Binding Level}" 
+                                   Width="70">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Level}" Value="Error">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Level}" Value="Critical">
+                                    <Setter Property="Foreground" Value="DarkRed"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Level}" Value="Warning">
+                                    <Setter Property="Foreground" Value="Orange"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Method" 
+                                   Binding="{Binding CallerMethod}" 
+                                   Width="150"/>
+                <DataGridTextColumn Header="Message" 
+                                   Binding="{Binding Message}" 
+                                   Width="200"/>
+                <DataGridTextColumn Header="Error" 
+                                   Binding="{Binding Error}" 
+                                   Width="*"/>
+                <DataGridTextColumn Header="Location" 
+                                   Binding="{Binding CallerFile, Converter={StaticResource FileNameConverter}}" 
+                                   Width="150"/>
+                <DataGridTextColumn Header="Line" 
+                                   Binding="{Binding CallerLine}" 
+                                   Width="50"/>
+            </DataGrid.Columns>
+
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy" Click="Copy_Click"/>
+                    <MenuItem Header="Copy All" Click="CopyAll_Click"/>
+                    <Separator/>
+                    <MenuItem Header="Go to File" Click="GoToFile_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="2">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Ready"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="CountText" Text="0 logs"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="LogFileText" Text="Memory"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

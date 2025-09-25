@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-windows</TargetFrameworks>
+	  <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+	  <!-- Propriétés NuGet -->
+	  <PackageId>MatthL.ResultLogger.WPF</PackageId>
+	  <Title>ResultLogger</Title>
+	  <Version>0.9.0</Version>
+	  <Authors>Matthieu L</Authors>
+	  <Company>Matthieu L</Company>
+	  <Description>Logviewer WPF View integration</Description>
+	  <PackageTags>result;logging;error-handling;result-pattern;functional</PackageTags>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <RepositoryUrl>https://github.com/LapercheMatthieu/ResultLogger</RepositoryUrl>
+	  <PackageProjectUrl>https://github.com/LapercheMatthieu/ResultLogger</PackageProjectUrl>
+
+	  <!-- Build -->
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <None Include="README.md" Pack="true" PackagePath="\" />
+	  <None Include="LICENCE" />
+  </ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MatthL.ResultLogger.Core\MatthL.ResultLogger.Core.csproj"/>
+	</ItemGroup>
+</Project>
